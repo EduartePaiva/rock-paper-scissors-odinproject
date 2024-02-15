@@ -3,6 +3,8 @@ function getComputerChoice() {
     return options[parseInt(Math.random() * 3)]
 }
 
+console.log("Welcome, type the function playGame() in the console to start playing!")
+
 function playSingleRound(playerSelection, computerSelection) {
     if (typeof playerSelection != "string") {
         return "User input should be a text"
