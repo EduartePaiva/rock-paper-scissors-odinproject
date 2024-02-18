@@ -1,79 +1,78 @@
 const options = ["rock", "paper", "scissors"]
+const display = document.querySelectorAll('#display span')
+const playerScore = document.querySelector("#player-score")
+const computerScore = document.querySelector("#computer-score")
+const congratsText = document.querySelector("#congrats-text")
+const restartButton = document.querySelector("#restart")
+const rockBtn = document.querySelector("#rock")
+const scissorsBtn = document.querySelector("#scissors")
+const paperBtn = document.querySelector("#paper")
+let currentPlayerScore = 0
+let currentComputerScore = 0
+
+restartButton.addEventListener('click', () => {
+    playerScore.textContent = "0"
+    computerScore.textContent = "0"
+    restartButton.style.display = "none"
+    congratsText.textContent = ""
+    display.forEach(dis => dis.textContent = "")
+    rockBtn.disabled = false
+    paperBtn.disabled = false
+    scissorsBtn.disabled = false
+})
+
 function getComputerChoice() {
     return options[parseInt(Math.random() * 3)]
 }
 
-console.log("Welcome, type the function playGame() in the console to start playing!")
+function updateScore(player = 0, computer = 0) {
+    currentPlayerScore += player
+    currentComputerScore += computer
+    playerScore.textContent = currentPlayerScore
+    computerScore.textContent = currentComputerScore
 
-function playSingleRound(playerSelection, computerSelection) {
-    if (typeof playerSelection != "string") {
-        return "User input should be a text"
-    }
-    let userInput = playerSelection.toLowerCase()
-    if (!options.find((v) => v == userInput)) {
-        return "You have to type \"rock\", \"paper\" or \"scissors\""
-    }
+    if (currentPlayerScore >= 5) congratsText.textContent = "Congratulation, You Win!"
+    if (currentComputerScore >= 5) congratsText.textContent = "It was not this time, give another try!"
 
-    if (userInput == computerSelection) return "It's a Tie"
-    if (userInput == "rock" && computerSelection == "paper") return "You Lose! Paper beats Rock"
-    if (userInput == "rock" && computerSelection == "scissors") return "You Yin! Rock beats Scissors"
-    if (userInput == "paper" && computerSelection == "rock") return "You Yin! Paper beats Rock"
-    if (userInput == "paper" && computerSelection == "scissors") return "You Lose! Scissors beats Paper"
-    if (userInput == "scissors" && computerSelection == "rock") return "You Lose! Rock beats Scissors"
-    if (userInput == "scissors" && computerSelection == "paper") return "You Yin! Scissors beats Paper"
+    if (currentPlayerScore >= 5 || currentComputerScore >= 5) {
+        currentPlayerScore = 0
+        currentComputerScore = 0
+        restartButton.style.display = "block"
+        rockBtn.disabled = true
+        paperBtn.disabled = true
+        scissorsBtn.disabled = true
+    }
 }
 
-function playGame() {
-    userScore = 0
-    computerScore = 0
+function playRound(playerSelection, computerSelection) {
+    display[0].textContent = `You played ${playerSelection}!`
+    display[1].textContent = `The computer played ${computerSelection}!`
 
-    let i = 0
-    while (i < 5) {
-        let userInp = prompt("Type rock, paper or scissors")
-        if (userInp == null) {
-            console.log("You must type!")
-            continue
-        }
-        const response = playSingleRound(userInp, getComputerChoice())
-        console.log(response)
-        switch (response) {
-            case "It's a Tie":
-                userScore++
-                computerScore++
-                break
-            case "You Lose! Paper beats Rock":
-                computerScore++
-                break
-            case "You Lose! Rock beats Scissors":
-                computerScore++
-                break
-            case "You Lose! Scissors beats Paper":
-                computerScore++
-                break
-            case "You Yin! Paper beats Rock":
-                userScore++
-                break
-            case "You Yin! Rock beats Scissors":
-                userScore++
-                break
-            case "You Yin! Scissors beats Paper":
-                userScore++
-                break
-            default:
-                continue
-        }
-        i++
-    }
+    let userPoint = 0
+    let computerPoint = 0
 
-    console.log("Your score: ", userScore);
-    console.log("Computer score: ", computerScore)
+    if (playerSelection == "rock" && computerSelection == "paper") computerPoint = 1
+    else if (playerSelection == "rock" && computerSelection == "scissors") userPoint = 1
+    else if (playerSelection == "paper" && computerSelection == "rock") userPoint = 1
+    else if (playerSelection == "paper" && computerSelection == "scissors") computerPoint = 1
+    else if (playerSelection == "scissors" && computerSelection == "paper") userPoint = 1
+    else if (playerSelection == "scissors" && computerSelection == "rock") computerPoint = 1
 
-    if (userScore > computerScore) {
-        console.log("Congratulations, you won!");
-    } else if (userScore < computerScore) {
-        console.log("The computer won!")
+    if (userPoint > computerPoint) {
+        display[2].textContent = `Player Won!`
+    } else if (userPoint < computerPoint) {
+        display[2].textContent = `Computer Won!`
     } else {
-        console.log("A tie happened, both you and the computer won!")
+        display[2].textContent = `It's a draw, no one will gain points!`
     }
-
+    updateScore(userPoint, computerPoint)
 }
+
+const buttonsClickTrigger = (e) => {
+    const input = e.target.getAttribute("id")
+    playRound(input, getComputerChoice())
+}
+
+rockBtn.addEventListener('click', buttonsClickTrigger)
+scissorsBtn.addEventListener('click', buttonsClickTrigger)
+paperBtn.addEventListener('click', buttonsClickTrigger)
