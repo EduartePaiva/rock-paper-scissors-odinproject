@@ -63,7 +63,7 @@ function playRound(playerSelection, computerSelection) {
     } else if (userPoint < computerPoint) {
         display[2].textContent = `Computer Won!`
     } else {
-        display[2].textContent = `It's a draw, no one will gain points!`
+        display[2].textContent = `It's a tie, no one will gain points!`
     }
     updateScore(userPoint, computerPoint)
 }
